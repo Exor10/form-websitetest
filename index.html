@@ -38,7 +38,10 @@
       color: #555;
     }
 
-    input[type="text"], input[type="tel"], input[type="file"] {
+    input[type="text"],
+    input[type="tel"],
+    input[type="email"],
+    input[type="file"] {
       width: 100%;
       padding: 10px;
       margin-top: 5px;
@@ -95,6 +98,9 @@
       <label>Contact Phone Number:</label>
       <input type="tel" name="phone" required>
 
+      <label>Email Address (optional):</label> <!-- New field -->
+      <input type="email" name="email">
+
       <label>Item Name:</label>
       <input type="text" name="item" required>
 
@@ -132,10 +138,9 @@
       });
 
       if (response.ok) {
-  window.location.href = 'thankyou.html';  // <-- instead of alert
-} else {
-  alert('There was a problem submitting the form.');
-}
+        window.location.href = 'thankyou.html';
+      } else {
+        alert('There was a problem submitting the form.');
       }
     });
   </script>

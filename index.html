@@ -82,7 +82,7 @@
       <h3>Pay here → GCash #09238269862</h3>
       <p>After payment, upload your receipt below:</p>
       <input type="file" name="receipt" accept="image/*" required>
-
+      
       <!-- Final submit button -->
       <button type="submit">Submit</button>
     </div>
@@ -92,10 +92,9 @@
 
 <!-- JavaScript must come AFTER the form -->
 <script>
-// Show payment section when ready
 function showPayment() {
   const form = document.getElementById('orderForm');
-  
+
   const name = form.elements['name'];
   const address = form.elements['address'];
   const phone = form.elements['phone'];
@@ -104,8 +103,8 @@ function showPayment() {
   let allFilled = true;
 
   [name, address, phone, item].forEach(input => {
-    if (!input.value.trim()) {
-      input.style.border = '2px solid red';
+    if (!input || !input.value || !input.value.trim()) { // 🔥 FIXED CHECK
+      if (input) input.style.border = '2px solid red';
       allFilled = false;
     } else {
       input.style.border = '';
@@ -120,9 +119,9 @@ function showPayment() {
   document.getElementById('paymentSection').style.display = 'block';
 }
 
-// Handle actual form submit
+// Handle form submit properly
 document.getElementById('orderForm').addEventListener('submit', function(e) {
-  e.preventDefault(); // Stop normal form submission
+  e.preventDefault(); // stop browser default redirect
 
   const form = document.getElementById('orderForm');
   const formData = new FormData(form);
@@ -133,8 +132,8 @@ document.getElementById('orderForm').addEventListener('submit', function(e) {
   })
   .then(response => response.json())
   .then(data => {
-    if (data.result === "success") {
-      window.location.href = "thankyou.html"; // Redirect after success
+    if (data.result === "success" && data.orderId) {
+      window.location.href = "thankyou.html?order=" + encodeURIComponent(data.orderId); // 🔥 Redirect to Thank You
     } else {
       alert("Error submitting form. Please try again later.");
     }

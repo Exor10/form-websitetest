@@ -119,30 +119,57 @@
   </div>
 
   <script>
-    const form = document.getElementById('orderForm');
-    const paymentSection = document.getElementById('paymentSection');
-    const uploadSection = document.getElementById('uploadSection');
+     const form = document.getElementById('orderForm');
+  const paymentSection = document.getElementById('paymentSection');
+  const uploadSection = document.getElementById('uploadSection');
 
-    function showPayment() {
-      paymentSection.style.display = 'block';
-      uploadSection.style.display = 'block';
-    }
+  // Create and style a simple loading spinner
+  const spinner = document.createElement('div');
+  spinner.innerHTML = "Submitting...";
+  spinner.style.position = 'fixed';
+  spinner.style.top = '0';
+  spinner.style.left = '0';
+  spinner.style.width = '100%';
+  spinner.style.height = '100%';
+  spinner.style.backgroundColor = 'rgba(255,255,255,0.8)';
+  spinner.style.display = 'flex';
+  spinner.style.alignItems = 'center';
+  spinner.style.justifyContent = 'center';
+  spinner.style.fontSize = '24px';
+  spinner.style.zIndex = '9999';
+  spinner.style.display = 'none'; // hidden by default
+  document.body.appendChild(spinner);
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
+  function showPayment() {
+    paymentSection.style.display = 'block';
+    uploadSection.style.display = 'block';
+  }
 
-      const formData = new FormData(form);
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+    spinner.style.display = 'flex'; // Show spinner
+
+    try {
       const response = await fetch('https://script.google.com/macros/s/AKfycbwWJPCTdRYNjM41c5qtKj33gYK4cB6DF02fFOHRchbuIii849hot7U7r7Tl7TvmUEV8/exec', {
         method: 'POST',
         body: formData
       });
 
-      if (response.ok) {
+      const result = await response.json();
+
+      if (result.result === "success") {
         window.location.href = 'thankyou.html';
       } else {
-        alert('There was a problem submitting the form.');
+        alert('Submission failed: ' + (result.message || 'Unknown error.'));
       }
-    });
+    } catch (error) {
+      alert('Network error: ' + error.message);
+    } finally {
+      spinner.style.display = 'none'; // Always hide spinner
+    }
+  });
   </script>
 
 </body>

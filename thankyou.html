@@ -28,7 +28,45 @@
       font-size: 18px;
       color: #555;
     }
+    .order-id {
+      margin-top: 20px;
+      font-size: 20px;
+      font-weight: bold;
+      color: #333;
+    }
     a {
       display: inline-block;
       margin-top: 30px;
-      text-decoration
+      text-decoration: none;
+      color: #fff;
+      background-color: #007BFF;
+      padding: 10px 20px;
+      border-radius: 5px;
+    }
+    a:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+<div class="message-box">
+  <h1>Thank You!</h1>
+  <p>Your order has been successfully submitted.</p>
+  <p id="orderId" class="order-id"></p>
+  <a href="index.html">Submit another order</a>
+</div>
+
+<script>
+// Read the Order ID from the URL
+const urlParams = new URLSearchParams(window.location.search);
+const orderId = urlParams.get('order');
+
+// Show the Order ID
+if (orderId) {
+  document.getElementById('orderId').textContent = "Your Order ID is: " + orderId;
+}
+</script>
+
+</body>
+</html>

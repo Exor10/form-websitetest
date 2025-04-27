@@ -82,7 +82,7 @@
       <h3>Pay here → GCash #09238269862</h3>
       <p>After payment, upload your receipt below:</p>
       <input type="file" name="receipt" accept="image/*" required>
-      
+
       <!-- Final submit button -->
       <button type="submit">Submit</button>
     </div>
@@ -92,6 +92,7 @@
 
 <!-- JavaScript must come AFTER the form -->
 <script>
+// Show payment section when ready
 function showPayment() {
   const form = document.getElementById('orderForm');
   
@@ -121,7 +122,7 @@ function showPayment() {
 
 // Handle actual form submit
 document.getElementById('orderForm').addEventListener('submit', function(e) {
-  e.preventDefault(); // stop browser default redirect
+  e.preventDefault(); // Stop normal form submission
 
   const form = document.getElementById('orderForm');
   const formData = new FormData(form);
@@ -133,8 +134,7 @@ document.getElementById('orderForm').addEventListener('submit', function(e) {
   .then(response => response.json())
   .then(data => {
     if (data.result === "success") {
-      alert("Thank you! Your order has been submitted.");
-      window.location.reload(); // reload page after successful submission
+      window.location.href = "thankyou.html"; // Redirect after success
     } else {
       alert("Error submitting form. Please try again later.");
     }

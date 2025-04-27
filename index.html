@@ -46,10 +46,6 @@
     button:hover {
       background: #0056b3;
     }
-    #paymentSection {
-      display: none;
-      margin-top: 20px;
-    }
   </style>
 </head>
 <body>
@@ -74,52 +70,19 @@
     <label>Item Name:</label>
     <input type="text" name="item" required>
 
-    <!-- First Button: Show GCash payment instructions -->
-    <button type="button" onclick="showPayment()">Next</button>
-
-    <!-- GCash Payment Upload Section -->
-    <div id="paymentSection">
-      <h3>Pay here → GCash #09238269862</h3>
-      <p>After payment, upload your receipt below:</p>
-      <input type="file" name="receipt" accept="image/*" required>
-      
-      <!-- Final submit button -->
-      <button type="submit">Submit</button>
-    </div>
+    <!-- GCash Payment Upload Section (Always Visible) -->
+    <h3>Pay here → GCash #09238269862</h3>
+    <p>After payment, upload your receipt below:</p>
+    <input type="file" name="receipt" accept="image/*" required>
+    
+    <!-- Final submit button -->
+    <button type="submit">Submit</button>
 
   </form>
 </div>
 
 <!-- JavaScript must come AFTER the form -->
 <script>
-function showPayment() {
-  const form = document.getElementById('orderForm');
-
-  const name = form.elements['name'];
-  const address = form.elements['address'];
-  const phone = form.elements['phone'];
-  const item = form.elements['item'];
-
-  let allFilled = true;
-
-  [name, address, phone, item].forEach(input => {
-    if (!input || !input.value || !input.value.trim()) { // 🔥 FIXED CHECK
-      if (input) input.style.border = '2px solid red';
-      allFilled = false;
-    } else {
-      input.style.border = '';
-    }
-  });
-
-  if (!allFilled) {
-    alert('Please fill in all required fields before proceeding.');
-    return;
-  }
-
-  document.getElementById('paymentSection').style.display = 'block';
-}
-
-// Handle form submit properly
 document.getElementById('orderForm').addEventListener('submit', function(e) {
   e.preventDefault(); // stop browser default redirect
 
@@ -133,7 +96,7 @@ document.getElementById('orderForm').addEventListener('submit', function(e) {
   .then(response => response.json())
   .then(data => {
     if (data.result === "success" && data.orderId) {
-      window.location.href = "thankyou.html?order=" + encodeURIComponent(data.orderId); // 🔥 Redirect to Thank You
+      window.location.href = "thankyou.html?order=" + encodeURIComponent(data.orderId); // Redirect to Thank You
     } else {
       alert("Error submitting form. Please try again later.");
     }

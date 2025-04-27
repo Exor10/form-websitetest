@@ -57,7 +57,7 @@
 <div class="container">
   <h2>Order Form</h2>
 
-  <form id="orderForm" action="https://script.google.com/macros/s/AKfycbwWJPCTdRYNjM41c5qtKj33gYK4cB6DF02fFOHRchbuIii849hot7U7r7Tl7TvmUEV8/exec" method="POST" enctype="multipart/form-data">
+  <form id="orderForm" enctype="multipart/form-data">
     <!-- Main form fields -->
     <label>Name:</label>
     <input type="text" name="name" required>
@@ -78,7 +78,7 @@
     <button type="button" onclick="showPayment()">Next</button>
 
     <!-- GCash Payment Upload Section -->
-    <div id="showPayment">
+    <div id="paymentSection">
       <h3>Pay here → GCash #09238269862</h3>
       <p>After payment, upload your receipt below:</p>
       <input type="file" name="receipt" accept="image/*" required>
@@ -118,6 +118,32 @@ function showPayment() {
 
   document.getElementById('paymentSection').style.display = 'block';
 }
+
+// Handle actual form submit
+document.getElementById('orderForm').addEventListener('submit', function(e) {
+  e.preventDefault(); // stop browser default redirect
+
+  const form = document.getElementById('orderForm');
+  const formData = new FormData(form);
+
+  fetch('https://script.google.com/macros/s/AKfycbwWJPCTdRYNjM41c5qtKj33gYK4cB6DF02fFOHRchbuIii849hot7U7r7Tl7TvmUEV8/exec', {
+    method: 'POST',
+    body: formData
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.result === "success") {
+      alert("Thank you! Your order has been submitted.");
+      window.location.reload(); // reload page after successful submission
+    } else {
+      alert("Error submitting form. Please try again later.");
+    }
+  })
+  .catch(error => {
+    alert("Error submitting form. Please check your internet connection.");
+    console.error('Error!', error.message);
+  });
+});
 </script>
 
 </body>

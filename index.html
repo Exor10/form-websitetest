@@ -46,6 +46,9 @@
     button:hover {
       background: #0056b3;
     }
+    iframe {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -53,12 +56,14 @@
 <div class="container">
   <h2>Order Form</h2>
 
+  <!-- 🔥 Form submits into hidden iframe -->
   <form id="orderForm"
     action="https://script.google.com/macros/s/AKfycbyFoSawkIvmCHfp6fPtM4PvB3bnXrUVFFG66OZ-J7Xiupb1bYg_ap5_imGFHJ8yfqyA/exec"
     method="POST"
     enctype="multipart/form-data"
+    target="hidden_iframe"
     onsubmit="submitted=true;">
-    <!-- Main form fields -->
+
     <label>Name:</label>
     <input type="text" name="name" required>
 
@@ -74,27 +79,20 @@
     <label>Item Name:</label>
     <input type="text" name="item" required>
 
-    <!-- GCash Payment Upload Section (Always Visible) -->
     <h3>Pay here → GCash #09238269862</h3>
     <p>After payment, upload your receipt below:</p>
     <input type="file" name="receipt" accept="image/*" required>
 
-    <!-- Final submit button -->
     <button type="submit">Submit</button>
   </form>
+
 </div>
+
+<!-- 🔥 Hidden iframe to handle form submission -->
+<iframe name="hidden_iframe" id="hidden_iframe" onload="if(submitted) { window.location.href='thankyou.html'; }"></iframe>
 
 <script>
 var submitted = false;
-
-// Simple trick: After submit, wait 2-3 seconds and manually redirect
-window.onload = function () {
-  if (window.location.href.includes('exec') && submitted) {
-    setTimeout(function () {
-      window.location.href = 'thankyou.html';
-    }, 2000); // Redirect after 2 seconds
-  }
-}
 </script>
 
 </body>

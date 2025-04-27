@@ -132,12 +132,10 @@
       });
 
       if (response.ok) {
-        alert('Form and payment receipt submitted successfully!');
-        form.reset();
-        paymentSection.style.display = 'none';
-        uploadSection.style.display = 'none';
-      } else {
-        alert('There was a problem submitting the form.');
+  window.location.href = 'thankyou.html';  // <-- instead of alert
+} else {
+  alert('There was a problem submitting the form.');
+}
       }
     });
   </script>

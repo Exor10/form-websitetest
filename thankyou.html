@@ -2,22 +2,29 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Thank You!</title>
+  <title>Thank You - Sharksfin</title>
   <style>
     body {
       background: linear-gradient(135deg, #89f7fe, #66a6ff);
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 100vh;
-      font-family: 'Poppins', sans-serif;
-      margin: 0;
-      flex-direction: column;
       text-align: center;
-      color: #333;
+    }
+    .message-box {
+      background: #ffffff;
+      padding: 40px 50px;
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      max-width: 500px;
     }
     h1 {
-      font-size: 36px;
+      font-size: 32px;
+      color: #333;
       margin-bottom: 20px;
     }
     p {
@@ -25,21 +32,25 @@
       color: #555;
     }
     a {
+      display: inline-block;
       margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #66a6ff;
+      color: white;
+      border-radius: 8px;
       text-decoration: none;
-      color: #66a6ff;
       font-size: 16px;
     }
     a:hover {
-      text-decoration: underline;
+      background-color: #5591e6;
     }
   </style>
 </head>
 <body>
-
-  <h1>Thank you!</h1>
-  <p>Your order has been submitted successfully.</p>
-  <a href="index.html">← Back to Order Form</a>
-
+  <div class="message-box">
+    <h1>Thank You!</h1>
+    <p>Your order has been submitted successfully.<br>We will contact you shortly.</p>
+    <a href="index.html">Submit Another Order</a>
+  </div>
 </body>
 </html>

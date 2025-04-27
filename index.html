@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Order Form - Sharksfin</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- 🔥 Make responsive -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -50,9 +50,6 @@
     button:hover {
       background: #0056b3;
     }
-    iframe {
-      display: none;
-    }
     h2, h3 {
       text-align: center;
     }
@@ -63,13 +60,7 @@
 <div class="container">
   <h2>Order Form</h2>
 
-  <form id="orderForm"
-    action="https://script.google.com/macros/s/AKfycbyFoSawkIvmCHfp6fPtM4PvB3bnXrUVFFG66OZ-J7Xiupb1bYg_ap5_imGFHJ8yfqyA/exec"
-    method="POST"
-    enctype="multipart/form-data"
-    target="hidden_iframe"
-    onsubmit="submitted=true;">
-
+  <form id="orderForm" enctype="multipart/form-data">
     <label>Name:</label>
     <input type="text" name="name" required>
 
@@ -85,8 +76,8 @@
     <label>Item Name:</label>
     <input type="text" name="item" required>
 
-    <h3>Pay here → GCash #09238269862</h3>
-    <p>After payment, upload your receipt below:</p>
+    <h3>Payment</h3>
+    <p>Upload your payment receipt below:</p>
     <input type="file" name="receipt" accept="image/*" required>
 
     <button type="submit">Submit</button>
@@ -94,10 +85,36 @@
 
 </div>
 
-<iframe name="hidden_iframe" id="hidden_iframe" onload="if(submitted) { window.location.href='thankyou.html'; }"></iframe>
-
 <script>
-var submitted = false;
+document.getElementById('orderForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  const form = document.getElementById('orderForm');
+  const formData = new FormData(form);
+
+  const receipt = formData.get('receipt');
+  if (!receipt || receipt.size === 0) {
+    alert('Please upload your payment receipt.');
+    return;
+  }
+
+  fetch('https://script.google.com/macros/s/AKfycbyFoSawkIvmCHfp6fPtM4PvB3bnXrUVFFG66OZ-J7Xiupb1bYg_ap5_imGFHJ8yfqyA/exec', {
+    method: 'POST',
+    body: formData,
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.result === 'success') {
+      window.location.href = 'thankyou.html?order=' + encodeURIComponent(data.orderId);
+    } else {
+      alert('Error submitting form: ' + (data.message || 'Unknown error.'));
+    }
+  })
+  .catch(error => {
+    alert('Failed to submit. Please try again.');
+    console.error(error);
+  });
+});
 </script>
 
 </body>

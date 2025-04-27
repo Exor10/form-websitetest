@@ -176,34 +176,39 @@
       });
 
       // Validate required fields
-      const nameInput = form.elements['name'];
-      const addressInput = form.elements['address'];
-      const phoneInput = form.elements['phone'];
-      const itemInput = form.elements['item'];
-      const receiptInput = form.elements['receipt'];
+     // Validate required fields
+const nameInput = form.elements['name'];
+const addressInput = form.elements['address'];
+const phoneInput = form.elements['phone'];
+const itemInput = form.elements['item'];
+const receiptInput = form.elements['receipt'];
 
-      let firstError = null;
+let firstError = null;
 
-      if (!nameInput || !nameInput.value.trim()) {
-        if (nameInput) nameInput.style.borderColor = 'red';
-        firstError = firstError || nameInput;
-      }
-      if (!addressInput || !addressInput.value.trim()) {
-        if (addressInput) addressInput.style.borderColor = 'red';
-        firstError = firstError || addressInput;
-      }
-      if (!phoneInput || !phoneInput.value.trim()) {
-        if (phoneInput) phoneInput.style.borderColor = 'red';
-        firstError = firstError || phoneInput;
-      }
-      if (!itemInput || !itemInput.value.trim()) {
-        if (itemInput) itemInput.style.borderColor = 'red';
-        firstError = firstError || itemInput;
-      }
-      if (!receiptInput || !receiptInput.files[0]) {
-        if (receiptInput) receiptInput.style.borderColor = 'red';
-        firstError = firstError || receiptInput;
-      }
+if (!nameInput || !nameInput.value.trim()) {
+  if (nameInput) nameInput.style.borderColor = 'red';
+  firstError = firstError || nameInput;
+}
+if (!addressInput || !addressInput.value.trim()) {
+  if (addressInput) addressInput.style.borderColor = 'red';
+  firstError = firstError || addressInput;
+}
+if (!phoneInput || !phoneInput.value.trim()) {
+  if (phoneInput) phoneInput.style.borderColor = 'red';
+  firstError = firstError || phoneInput;
+}
+if (!itemInput || !itemInput.value.trim()) {
+  if (itemInput) itemInput.style.borderColor = 'red';
+  firstError = firstError || itemInput;
+}
+// Only check receipt if upload section is visible!
+if (uploadSection.style.display === 'block') {
+  if (!receiptInput || !receiptInput.files[0]) {
+    if (receiptInput) receiptInput.style.borderColor = 'red';
+    firstError = firstError || receiptInput;
+  }
+}
+
 
       if (firstError) {
         alert('Please fill in all required fields.');

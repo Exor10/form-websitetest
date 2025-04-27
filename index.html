@@ -1,116 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Order Form - Sharksfin</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f0f8ff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      margin: 0;
-    }
-    .container {
-      background: white;
-      padding: 20px 30px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-      max-width: 400px;
-      width: 100%;
-    }
-    label {
-      display: block;
-      margin-top: 15px;
-      font-weight: bold;
-    }
-    input[type="text"], input[type="tel"], input[type="email"], input[type="file"] {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      box-sizing: border-box;
-    }
-    button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      background: #007BFF;
-      color: white;
-      border: none;
-      cursor: pointer;
-      width: 100%;
-      font-size: 16px;
-      border-radius: 4px;
-    }
-    button:hover {
-      background: #0056b3;
-    }
-    #paymentSection {
-      display: none;
-      margin-top: 20px;
-    }
-  </style>
-</head>
-<body>
+<form id="orderForm" action="https://script.google.com/macros/s/AKfycbxxxxxx/exec" method="POST" enctype="multipart/form-data">
+  <label>Name:</label>
+  <input type="text" name="name" required>
 
-<div class="container">
-  <h2>Order Form</h2>
-  <form id="orderForm">
-    <label>Name:</label>
-    <input type="text" name="name" required>
+  <label>Address:</label>
+  <input type="text" name="address" required>
 
-    <label>Address:</label>
-    <input type="text" name="address" required>
+  <label>Phone:</label>
+  <input type="tel" name="phone" required>
 
-    <label>Phone:</label>
-    <input type="tel" name="phone" required>
+  <label>Email (optional):</label>
+  <input type="email" name="email">
 
-    <label>Email (optional):</label>
-    <input type="email" name="email">
+  <label>Item Name:</label>
+  <input type="text" name="item" required>
 
-    <label>Item Name:</label>
-    <input type="text" name="item" required>
+  <button type="button" onclick="showPayment()">Next</button>
 
-    <button type="button" onclick="showPayment()">Next</button>
-    
-    <div id="paymentSection">
-      <h3>Pay here → GCash #09238269862</h3>
-      <p>Upload your payment receipt:</p>
-      <input type="file" name="receipt" accept="image/*" required>
-      <button type="submit">Submit</button>
-    </div>
-  </form>
-</div>
-
-<script>
-function showPayment() {
-  const form = document.getElementById('orderForm');
-  
-  const name = form.elements['name'];
-  const address = form.elements['address'];
-  const phone = form.elements['phone'];
-  const item = form.elements['item'];
-  
-  let allFilled = true;
-  
-  [name, address, phone, item].forEach(input => {
-    if (!input.value.trim()) {
-      input.style.border = '2px solid red';
-      allFilled = false;
-    } else {
-      input.style.border = '';
-    }
-  });
-  
-  if (!allFilled) {
-    alert('Please fill in all required fields before proceeding.');
-    return;
-  }
-  
-  document.getElementById('paymentSection').style.display = 'block';
-}
-</script>
-
-</body>
-</html>
+  <div id="paymentSection" style="display: none;">
+    <h3>Pay here → GCash #09238269862</h3>
+    <p>Upload your payment receipt:</p>
+    <input type="file" name="receipt" accept="image/*" required>
+    <button type="submit">Submit</button>
+  </div>
+</form>

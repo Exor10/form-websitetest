@@ -73,7 +73,7 @@
     <!-- GCash Payment Upload Section (Always Visible) -->
     <h3>Pay here → GCash #09238269862</h3>
     <p>After payment, upload your receipt below:</p>
-    <input type="file" name="receipt" accept="image/*" required>
+    <input type="file" name="receipt" id="receiptInput" accept="image/*" required>
     
     <!-- Final submit button -->
     <button type="submit">Submit</button>
@@ -87,6 +87,14 @@ document.getElementById('orderForm').addEventListener('submit', function(e) {
   e.preventDefault(); // stop browser default redirect
 
   const form = document.getElementById('orderForm');
+  const receiptInput = document.getElementById('receiptInput');
+
+  // 🔵 Check if receipt file is uploaded
+  if (!receiptInput.files || receiptInput.files.length === 0) {
+    alert("Please upload your GCash payment receipt before submitting.");
+    return; // Stop submitting if no file
+  }
+
   const formData = new FormData(form);
 
   fetch('https://script.google.com/macros/s/AKfycbwWJPCTdRYNjM41c5qtKj33gYK4cB6DF02fFOHRchbuIii849hot7U7r7Tl7TvmUEV8/exec', {

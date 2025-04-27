@@ -53,7 +53,11 @@
 <div class="container">
   <h2>Order Form</h2>
 
-  <form id="orderForm" enctype="multipart/form-data">
+  <form id="orderForm"
+    action="https://script.google.com/macros/s/AKfycbwWJPCTdRYNjM41c5qtKj33gYK4cB6DF02fFOHRchbuIii849hot7U7r7Tl7TvmUEV8/exec"
+    method="POST"
+    enctype="multipart/form-data"
+    onsubmit="submitted=true;">
     <!-- Main form fields -->
     <label>Name:</label>
     <input type="text" name="name" required>
@@ -73,47 +77,24 @@
     <!-- GCash Payment Upload Section (Always Visible) -->
     <h3>Pay here → GCash #09238269862</h3>
     <p>After payment, upload your receipt below:</p>
-    <input type="file" name="receipt" id="receiptInput" accept="image/*" required>
-    
+    <input type="file" name="receipt" accept="image/*" required>
+
     <!-- Final submit button -->
     <button type="submit">Submit</button>
-
   </form>
 </div>
 
-<!-- JavaScript must come AFTER the form -->
 <script>
-document.getElementById('orderForm').addEventListener('submit', function(e) {
-  e.preventDefault(); // stop browser default redirect
+var submitted = false;
 
-  const form = document.getElementById('orderForm');
-  const receiptInput = document.getElementById('receiptInput');
-
-  // 🔵 Check if receipt file is uploaded
-  if (!receiptInput.files || receiptInput.files.length === 0) {
-    alert("Please upload your GCash payment receipt before submitting.");
-    return; // Stop submitting if no file
+// Simple trick: After submit, wait 2-3 seconds and manually redirect
+window.onload = function () {
+  if (window.location.href.includes('exec') && submitted) {
+    setTimeout(function () {
+      window.location.href = 'thankyou.html';
+    }, 2000); // Redirect after 2 seconds
   }
-
-  const formData = new FormData(form);
-
-  fetch('https://script.google.com/macros/s/AKfycbwWJPCTdRYNjM41c5qtKj33gYK4cB6DF02fFOHRchbuIii849hot7U7r7Tl7TvmUEV8/exec', {
-    method: 'POST',
-    body: formData
-  })
-  .then(response => response.json())
-  .then(data => {
-    if (data.result === "success" && data.orderId) {
-      window.location.href = "thankyou.html?order=" + encodeURIComponent(data.orderId); // Redirect to Thank You
-    } else {
-      alert("Error submitting form. Please try again later.");
-    }
-  })
-  .catch(error => {
-    alert("Error submitting form. Please check your internet connection.");
-    console.error('Error!', error.message);
-  });
-});
+}
 </script>
 
 </body>

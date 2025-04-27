@@ -1,25 +1,69 @@
-<form id="orderForm" action="https://script.google.com/macros/s/AKfycbxxxxxx/exec" method="POST" enctype="multipart/form-data">
-  <label>Name:</label>
-  <input type="text" name="name" required>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Order Form - Sharksfin</title>
+</head>
+<body>
 
-  <label>Address:</label>
-  <input type="text" name="address" required>
+<div class="container">
+  <h2>Order Form</h2>
+  <form id="orderForm" action="YOUR_SCRIPT_URL" method="POST" enctype="multipart/form-data">
+    <label>Name:</label>
+    <input type="text" name="name" required>
 
-  <label>Phone:</label>
-  <input type="tel" name="phone" required>
+    <label>Address:</label>
+    <input type="text" name="address" required>
 
-  <label>Email (optional):</label>
-  <input type="email" name="email">
+    <label>Phone:</label>
+    <input type="tel" name="phone" required>
 
-  <label>Item Name:</label>
-  <input type="text" name="item" required>
+    <label>Email (optional):</label>
+    <input type="email" name="email">
 
-  <button type="button" onclick="showPayment()">Next</button>
+    <label>Item Name:</label>
+    <input type="text" name="item" required>
 
-  <div id="paymentSection" style="display: none;">
-    <h3>Pay here → GCash #09238269862</h3>
-    <p>Upload your payment receipt:</p>
-    <input type="file" name="receipt" accept="image/*" required>
-    <button type="submit">Submit</button>
-  </div>
-</form>
+    <button type="button" onclick="showPayment()">Next</button>
+
+    <div id="paymentSection" style="display: none;">
+      <h3>Pay here → GCash #09238269862</h3>
+      <p>Upload your payment receipt:</p>
+      <input type="file" name="receipt" accept="image/*" required>
+      <button type="submit">Submit</button>
+    </div>
+  </form>
+</div>
+
+<!-- Make sure your JS comes AFTER the form!! -->
+<script>
+function showPayment() {
+  const form = document.getElementById('orderForm');
+  
+  const name = form.elements['name'];
+  const address = form.elements['address'];
+  const phone = form.elements['phone'];
+  const item = form.elements['item'];
+  
+  let allFilled = true;
+  
+  [name, address, phone, item].forEach(input => {
+    if (!input.value.trim()) {
+      input.style.border = '2px solid red';
+      allFilled = false;
+    } else {
+      input.style.border = '';
+    }
+  });
+  
+  if (!allFilled) {
+    alert('Please fill in all required fields before proceeding.');
+    return;
+  }
+  
+  document.getElementById('paymentSection').style.display = 'block';
+}
+</script>
+
+</body>
+</html>

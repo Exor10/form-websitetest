@@ -119,128 +119,161 @@
   </div>
 
   <script>
-    const form = document.getElementById('orderForm');
-    const paymentSection = document.getElementById('paymentSection');
-    const uploadSection = document.getElementById('uploadSection');
-    const submitButton = form.querySelector('button[type="submit"]');
+  const form = document.getElementById('orderForm');
+  const paymentSection = document.getElementById('paymentSection');
+  const uploadSection = document.getElementById('uploadSection');
+  const submitButton = form.querySelector('button[type="submit"]');
 
-    // Create and style a simple animated spinner
-    const spinner = document.createElement('div');
-    spinner.innerHTML = `
-      <div class="loader"></div>
-      <div style="margin-top: 15px; font-size: 18px; color: #333;">Submitting...</div>
-    `;
-    spinner.style.position = 'fixed';
-    spinner.style.top = '0';
-    spinner.style.left = '0';
-    spinner.style.width = '100%';
-    spinner.style.height = '100%';
-    spinner.style.backgroundColor = 'rgba(255,255,255,0.8)';
-    spinner.style.display = 'flex';
-    spinner.style.flexDirection = 'column';
-    spinner.style.alignItems = 'center';
-    spinner.style.justifyContent = 'center';
-    spinner.style.zIndex = '9999';
-    spinner.style.display = 'none'; // hidden by default
-    document.body.appendChild(spinner);
+  // Create and style a simple animated spinner
+  const spinner = document.createElement('div');
+  spinner.innerHTML = `
+    <div class="loader"></div>
+    <div style="margin-top: 15px; font-size: 18px; color: #333;">Submitting...</div>
+  `;
+  spinner.style.position = 'fixed';
+  spinner.style.top = '0';
+  spinner.style.left = '0';
+  spinner.style.width = '100%';
+  spinner.style.height = '100%';
+  spinner.style.backgroundColor = 'rgba(255,255,255,0.8)';
+  spinner.style.display = 'none'; // hidden by default
+  spinner.style.flexDirection = 'column';
+  spinner.style.alignItems = 'center';
+  spinner.style.justifyContent = 'center';
+  spinner.style.zIndex = '9999';
+  document.body.appendChild(spinner);
 
-    // Add CSS for animated spinner
-    const style = document.createElement('style');
-    style.textContent = `
-      .loader {
-        border: 8px solid #f3f3f3;
-        border-top: 8px solid #66a6ff;
-        border-radius: 50%;
-        width: 60px;
-        height: 60px;
-        animation: spin 1s linear infinite;
-      }
-      @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-      }
-    `;
-    document.head.appendChild(style);
+  // Add CSS for spinner animation
+  const style = document.createElement('style');
+  style.textContent = `
+    .loader {
+      border: 8px solid #f3f3f3;
+      border-top: 8px solid #66a6ff;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  `;
+  document.head.appendChild(style);
 
-    function showPayment() {
-      paymentSection.style.display = 'block';
-      uploadSection.style.display = 'block';
+  function showPayment() {
+    // Validate first part before moving to payment section
+    const nameInput = form.elements['name'];
+    const addressInput = form.elements['address'];
+    const phoneInput = form.elements['phone'];
+    const itemInput = form.elements['item'];
+
+    // Clear previous error styles
+    [nameInput, addressInput, phoneInput, itemInput].forEach(input => {
+      input.style.borderColor = '';
+    });
+
+    let firstError = null;
+
+    if (!nameInput || !nameInput.value.trim()) {
+      nameInput.style.borderColor = 'red';
+      firstError = firstError || nameInput;
+    }
+    if (!addressInput || !addressInput.value.trim()) {
+      addressInput.style.borderColor = 'red';
+      firstError = firstError || addressInput;
+    }
+    if (!phoneInput || !phoneInput.value.trim()) {
+      phoneInput.style.borderColor = 'red';
+      firstError = firstError || phoneInput;
+    }
+    if (!itemInput || !itemInput.value.trim()) {
+      itemInput.style.borderColor = 'red';
+      firstError = firstError || itemInput;
     }
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
+    if (firstError) {
+      alert('Please fill in all required fields before proceeding.');
+      firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
 
-      // Clear previous error styles
-      Array.from(form.elements).forEach(el => {
-        el.style.borderColor = "";
+    paymentSection.style.display = 'block';
+    uploadSection.style.display = 'block';
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    // Validate everything again before final submit
+    const nameInput = form.elements['name'];
+    const addressInput = form.elements['address'];
+    const phoneInput = form.elements['phone'];
+    const itemInput = form.elements['item'];
+    const receiptInput = form.querySelector('input[name="receipt"]');
+
+    // Clear previous error styles
+    [nameInput, addressInput, phoneInput, itemInput, receiptInput].forEach(input => {
+      if (input) input.style.borderColor = '';
+    });
+
+    let firstError = null;
+
+    if (!nameInput || !nameInput.value.trim()) {
+      nameInput.style.borderColor = 'red';
+      firstError = firstError || nameInput;
+    }
+    if (!addressInput || !addressInput.value.trim()) {
+      addressInput.style.borderColor = 'red';
+      firstError = firstError || addressInput;
+    }
+    if (!phoneInput || !phoneInput.value.trim()) {
+      phoneInput.style.borderColor = 'red';
+      firstError = firstError || phoneInput;
+    }
+    if (!itemInput || !itemInput.value.trim()) {
+      itemInput.style.borderColor = 'red';
+      firstError = firstError || itemInput;
+    }
+
+    if (uploadSection.style.display === 'block') {
+      if (!receiptInput || !receiptInput.files || !receiptInput.files.length) {
+        if (receiptInput) receiptInput.style.borderColor = 'red';
+        firstError = firstError || receiptInput;
+      }
+    }
+
+    if (firstError) {
+      alert('Please fill in all required fields before submitting.');
+      firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    const formData = new FormData(form);
+    spinner.style.display = 'flex'; // Show spinner
+    submitButton.disabled = true; // Disable submit button
+
+    try {
+      const response = await fetch('https://script.google.com/macros/s/AKfycbwWJPCTdRYNjM41c5qtKj33gYK4cB6DF02fFOHRchbuIii849hot7U7r7Tl7TvmUEV8/exec', {
+        method: 'POST',
+        body: formData
       });
 
-      // Validate required fields
-     // Validate required fields
-const nameInput = form.elements['name'];
-const addressInput = form.elements['address'];
-const phoneInput = form.elements['phone'];
-const itemInput = form.elements['item'];
-const receiptInput = form.elements['receipt'];
+      const result = await response.json();
 
-let firstError = null;
-
-if (!nameInput || !nameInput.value.trim()) {
-  if (nameInput) nameInput.style.borderColor = 'red';
-  firstError = firstError || nameInput;
-}
-if (!addressInput || !addressInput.value.trim()) {
-  if (addressInput) addressInput.style.borderColor = 'red';
-  firstError = firstError || addressInput;
-}
-if (!phoneInput || !phoneInput.value.trim()) {
-  if (phoneInput) phoneInput.style.borderColor = 'red';
-  firstError = firstError || phoneInput;
-}
-if (!itemInput || !itemInput.value.trim()) {
-  if (itemInput) itemInput.style.borderColor = 'red';
-  firstError = firstError || itemInput;
-}
-// Only check receipt if upload section is visible!
-if (uploadSection.style.display === 'block') {
-  if (!receiptInput || !receiptInput.files[0]) {
-    if (receiptInput) receiptInput.style.borderColor = 'red';
-    firstError = firstError || receiptInput;
-  }
-}
-
-
-      if (firstError) {
-        alert('Please fill in all required fields.');
-        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        return;
+      if (result.result === "success") {
+        window.location.href = 'thankyou.html';
+      } else {
+        alert('Submission failed: ' + (result.message || 'Unknown error.'));
       }
-
-      const formData = new FormData(form);
-      spinner.style.display = 'flex'; // Show spinner
-      submitButton.disabled = true; // Disable submit button
-
-      try {
-        const response = await fetch('https://script.google.com/macros/s/AKfycbwWJPCTdRYNjM41c5qtKj33gYK4cB6DF02fFOHRchbuIii849hot7U7r7Tl7TvmUEV8/exec', {
-          method: 'POST',
-          body: formData
-        });
-
-        const result = await response.json();
-
-        if (result.result === "success") {
-          window.location.href = 'thankyou.html';
-        } else {
-          alert('Submission failed: ' + (result.message || 'Unknown error.'));
-        }
-      } catch (error) {
-        alert('Network error: ' + error.message);
-      } finally {
-        spinner.style.display = 'none'; // Always hide spinner
-        submitButton.disabled = false; // Re-enable submit button
-      }
-    });
-  </script>
+    } catch (error) {
+      alert('Network error: ' + error.message);
+    } finally {
+      spinner.style.display = 'none'; // Always hide spinner
+      submitButton.disabled = false; // Re-enable submit button
+    }
+  });
+</script>
 
 </body>
 </html>

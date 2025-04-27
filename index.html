@@ -56,9 +56,11 @@
     button:hover {
       background-color: #5591e6;
     }
-    #paymentSection, #uploadSection {
+    #paymentSection {
       display: none;
       margin-top: 20px;
+      opacity: 0;
+      transition: opacity 0.5s;
     }
     .note {
       font-size: 14px;
@@ -68,6 +70,7 @@
   </style>
 </head>
 <body>
+
 <div class="container">
   <h2>Order Form</h2>
   <form id="orderForm">
@@ -87,17 +90,19 @@
     <input type="text" name="item" required>
 
     <button type="button" onclick="showPayment()">Next</button>
-
-    <div id="paymentSection">
-      <h3>Pay here → GCash #09238269862</h3>
-      <p class="note">After payment, upload your receipt below:</p>
-      <div id="uploadSection">
-        <input type="file" name="receipt" accept="image/*" required>
-        <button type="submit">Submit</button>
-      </div>
-    </div>
   </form>
+
+  <!-- Payment Section OUTSIDE the form -->
+  <div id="paymentSection">
+    <h3>Pay here → GCash #09238269862</h3>
+    <p class="note">After payment, upload your receipt below:</p>
+    <div id="uploadSection">
+      <input type="file" name="receipt" accept="image/*" required>
+      <button type="submit" form="orderForm">Submit</button>
+    </div>
+  </div>
 </div>
+
 <script>
   const form = document.getElementById('orderForm');
   const paymentSection = document.getElementById('paymentSection');
@@ -134,10 +139,10 @@
     });
 
     let firstError = null;
-    if (!nameInput || !nameInput.value.trim()) { if (nameInput) nameInput.style.borderColor = 'red'; firstError = firstError || nameInput; }
-    if (!addressInput || !addressInput.value.trim()) { if (addressInput) addressInput.style.borderColor = 'red'; firstError = firstError || addressInput; }
-    if (!phoneInput || !phoneInput.value.trim()) { if (phoneInput) phoneInput.style.borderColor = 'red'; firstError = firstError || phoneInput; }
-    if (!itemInput || !itemInput.value.trim()) { if (itemInput) itemInput.style.borderColor = 'red'; firstError = firstError || itemInput; }
+    if (!nameInput.value.trim()) { nameInput.style.borderColor = 'red'; firstError = nameInput; }
+    if (!addressInput.value.trim()) { addressInput.style.borderColor = 'red'; firstError = firstError || addressInput; }
+    if (!phoneInput.value.trim()) { phoneInput.style.borderColor = 'red'; firstError = firstError || phoneInput; }
+    if (!itemInput.value.trim()) { itemInput.style.borderColor = 'red'; firstError = firstError || itemInput; }
 
     if (firstError) {
       alert('Please fill in all required fields before proceeding.');
@@ -146,7 +151,9 @@
     }
 
     paymentSection.style.display = 'block';
-    uploadSection.style.display = 'block';
+    setTimeout(() => {
+      paymentSection.style.opacity = 1;
+    }, 10); // smooth fade in
   }
 
   form.addEventListener('submit', async (e) => {
@@ -156,31 +163,28 @@
     const addressInput = form.elements['address'];
     const phoneInput = form.elements['phone'];
     const itemInput = form.elements['item'];
-    const receiptInput = form.querySelector('input[name="receipt"]');
+    const receiptInput = document.querySelector('input[name="receipt"]');
 
     [nameInput, addressInput, phoneInput, itemInput, receiptInput].forEach(input => {
       if (input) input.style.borderColor = '';
     });
 
     let firstError = null;
+    if (!nameInput.value.trim()) { nameInput.style.borderColor = 'red'; firstError = nameInput; }
+    if (!addressInput.value.trim()) { addressInput.style.borderColor = 'red'; firstError = firstError || addressInput; }
+    if (!phoneInput.value.trim()) { phoneInput.style.borderColor = 'red'; firstError = firstError || phoneInput; }
+    if (!itemInput.value.trim()) { itemInput.style.borderColor = 'red'; firstError = firstError || itemInput; }
 
-    if (!nameInput || !nameInput.value.trim()) { if (nameInput) nameInput.style.borderColor = 'red'; firstError = firstError || nameInput; }
-    if (!addressInput || !addressInput.value.trim()) { if (addressInput) addressInput.style.borderColor = 'red'; firstError = firstError || addressInput; }
-    if (!phoneInput || !phoneInput.value.trim()) { if (phoneInput) phoneInput.style.borderColor = 'red'; firstError = firstError || phoneInput; }
-    if (!itemInput || !itemInput.value.trim()) { if (itemInput) itemInput.style.borderColor = 'red'; firstError = firstError || itemInput; }
-
-    if (uploadSection.style.display === 'block') {
-      if (!receiptInput || !receiptInput.files || !receiptInput.files.length) {
-        if (receiptInput) receiptInput.style.borderColor = 'red';
+    if (!receiptInput || !receiptInput.files.length) {
+      receiptInput.style.borderColor = 'red';
+      firstError = firstError || receiptInput;
+    } else {
+      const file = receiptInput.files[0];
+      const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
+      if (!validTypes.includes(file.type)) {
+        alert('Invalid file type. Please upload a photo (JPEG, PNG, GIF).');
+        receiptInput.style.borderColor = 'red';
         firstError = firstError || receiptInput;
-      } else {
-        const file = receiptInput.files[0];
-        const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
-        if (!validTypes.includes(file.type)) {
-          alert('Invalid file type. Please upload a photo (JPEG, PNG, GIF).');
-          receiptInput.style.borderColor = 'red';
-          firstError = firstError || receiptInput;
-        }
       }
     }
 
@@ -199,9 +203,7 @@
         method: 'POST',
         body: formData
       });
-
       const result = await response.json();
-
       if (result.result === "success") {
         window.location.href = 'thankyou.html';
       } else {
@@ -215,5 +217,6 @@
     }
   });
 </script>
+
 </body>
 </html>

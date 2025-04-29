@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Admin Dashboard - Sharksfin Orders</title>
   <style>
     body {
@@ -11,7 +11,7 @@
       margin: 0;
       padding: 20px;
     }
-    .dashboard {
+    .dashboard, .login-box {
       max-width: 600px;
       margin: auto;
       background: white;
@@ -28,7 +28,7 @@
       gap: 10px;
       margin-top: 20px;
     }
-    input[type="text"] {
+    input[type="text"], input[type="password"] {
       padding: 10px;
       font-size: 16px;
     }
@@ -60,23 +60,69 @@
     .sheet-link a:hover {
       background: #218838;
     }
+    .error {
+      color: red;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
-  <div class="dashboard">
-    <h2>Sharksfin Order Admin</h2>
-    <form target="hiddenIframe" method="post" action="https://script.google.com/macros/s/AKfycbzZhpgjanzBDzXjoMNM5tDhwVO7YpgqT8wP7zlfjoOVjiQ3f8-TUxJrhTeEQxh1aCun/exec">
-      <input type="hidden" name="action" value="updateStatus" />
-      <input type="text" name="orderId" placeholder="Enter Order ID (e.g. ORDER-001)" required />
-      <button type="submit" name="status" value="Completed">Mark as Completed</button>
-      <button type="submit" name="status" value="Not Completed">Mark as Not Completed</button>
-    </form>
-    <iframe id="hiddenIframe" name="hiddenIframe" style="display:none;"></iframe>
-    <div class="sheet-link">
-      <a href="https://docs.google.com/spreadsheets/d/1fXE-7pqV7wDrS_uBGK7vLx_5adyXgv8l2yTCsPlzIvY/edit?usp=sharing" target="_blank">
-        View Orders in Google Sheet
-      </a>
-    </div>
+
+<div class="login-box" id="loginBox">
+  <h2>Admin Login</h2>
+  <input type="text" id="username" placeholder="Username" />
+  <input type="password" id="password" placeholder="Password" />
+  <div class="error" id="errorBox"></div>
+  <button onclick="login()">Login</button>
+</div>
+
+<div class="dashboard" id="adminPanel" style="display:none;">
+  <h2>Sharksfin Order Admin</h2>
+  <form target="hiddenIframe" method="post" action="https://script.google.com/macros/s/AKfycbzZhpgjanzBDzXjoMNM5tDhwVO7YpgqT8wP7zlfjoOVjiQ3f8-TUxJrhTeEQxh1aCun/exec">
+    <input type="hidden" name="action" value="updateStatus" />
+    <input type="text" name="orderId" placeholder="Enter Order ID (e.g. ORDER-001)" required />
+    <button type="submit" name="status" value="Completed">Mark as Completed</button>
+    <button type="submit" name="status" value="Not Completed">Mark as Not Completed</button>
+  </form>
+  <iframe id="hiddenIframe" name="hiddenIframe" style="display:none;"></iframe>
+  <div class="sheet-link">
+    <a href="https://docs.google.com/spreadsheets/d/1fXE-7pqV7wDrS_uBGK7vLx_5adyXgv8l2yTCsPlzIvY/edit?usp=sharing" target="_blank">
+      View Orders in Google Sheet
+    </a>
   </div>
+</div>
+
+<script>
+  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzZhpgjanzBDzXjoMNM5tDhwVO7YpgqT8wP7zlfjoOVjiQ3f8-TUxJrhTeEQxh1aCun/exec";
+
+  function login() {
+    const user = document.getElementById("username").value.trim();
+    const pass = document.getElementById("password").value.trim();
+    const errorBox = document.getElementById("errorBox");
+
+    fetch(WEB_APP_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        action: "adminLogin",
+        username: user,
+        password: pass
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.result === "success") {
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("adminPanel").style.display = "block";
+      } else {
+        errorBox.textContent = data.message || "Login failed.";
+      }
+    })
+    .catch(err => {
+      errorBox.textContent = "Login error: " + err.message;
+    });
+  }
+</script>
+
 </body>
 </html>

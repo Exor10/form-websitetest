@@ -7,150 +7,62 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f0f0f0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+      background: #f4f4f4;
       margin: 0;
+      padding: 20px;
     }
-    .login-box, .dashboard {
+    .dashboard {
+      max-width: 600px;
+      margin: auto;
       background: white;
       padding: 30px;
-      border-radius: 10px;
+      border-radius: 8px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      width: 100%;
-      max-width: 600px;
     }
     h2 {
       text-align: center;
-      margin-bottom: 20px;
     }
-    input[type="text"], input[type="password"] {
-      width: 100%;
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    input[type="text"] {
       padding: 10px;
-      margin-top: 10px;
-      margin-bottom: 10px;
       font-size: 16px;
     }
     button {
-      width: 48%;
       padding: 12px;
       font-size: 16px;
-      background-color: #007BFF;
+      background-color: #007bff;
       color: white;
       border: none;
       border-radius: 5px;
       cursor: pointer;
-      margin: 5px 1%;
     }
     button:hover {
       background-color: #0056b3;
     }
-    .error {
-      color: red;
-      text-align: center;
-    }
-    .controls {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 20px;
-    }
     iframe {
       width: 100%;
-      height: 60vh;
+      height: 500px;
       border: none;
       margin-top: 20px;
-    }
-    #statusMsg {
-      text-align: center;
-      margin-top: 10px;
     }
   </style>
 </head>
 <body>
-
-<div class="login-box" id="loginBox">
-  <h2>Admin Login</h2>
-  <input type="text" id="username" placeholder="Username" required />
-  <input type="password" id="password" placeholder="Password" required />
-  <div class="error" id="error"></div>
-  <button onclick="login()">Login</button>
-</div>
-
-<div class="dashboard" id="dashboard" style="display:none;">
-  <h2>Sharksfin Order Sheet</h2>
-  <div class="controls">
-    <input type="text" id="orderInput" placeholder="Enter Order ID (e.g. ORDER-001)" />
-    <button onclick="updateStatus('Completed')">Mark Completed</button>
-    <button onclick="updateStatus('Not Completed')">Mark Not Completed</button>
+  <div class="dashboard">
+    <h2>Sharksfin Order Admin</h2>
+    <form target="hiddenIframe" method="post" action="https://script.google.com/macros/s/AKfycbzZhpgjanzBDzXjoMNM5tDhwVO7YpgqT8wP7zlfjoOVjiQ3f8-TUxJrhTeEQxh1aCun/exec">
+      <input type="hidden" name="action" value="updateStatus" />
+      <input type="text" name="orderId" placeholder="Enter Order ID (e.g. ORDER-001)" required />
+      <button type="submit" name="status" value="Completed">Mark as Completed</button>
+      <button type="submit" name="status" value="Not Completed">Mark as Not Completed</button>
+    </form>
+    <iframe id="hiddenIframe" name="hiddenIframe"></iframe>
+    <iframe src="https://docs.google.com/spreadsheets/d/1fXE-7pqV7wDrS_uBGK7vLx_5adyXgv8l2yTCsPlzIvY/edit?usp=sharing"></iframe>
   </div>
-  <p id="statusMsg"></p>
-  <iframe id="sheetFrame" src="https://docs.google.com/spreadsheets/d/1fXE-7pqV7wDrS_uBGK7vLx_5adyXgv8l2yTCsPlzIvY/edit?usp=sharing"></iframe>
-</div>
-
-<script>
-  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzZhpgjanzBDzXjoMNM5tDhwVO7YpgqT8wP7zlfjoOVjiQ3f8-TUxJrhTeEQxh1aCun/exec";
-  const PROXY = "https://cors-anywhere.herokuapp.com/";
-
-  function login() {
-    const inputUser = document.getElementById('username').value;
-    const inputPass = document.getElementById('password').value;
-    const errorBox = document.getElementById('error');
-
-    fetch(PROXY + WEB_APP_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({
-        action: 'adminLogin',
-        username: inputUser,
-        password: inputPass
-      })
-    })
-    .then(res => res.json())
-    .then(data => {
-      if (data.result === 'success') {
-        document.getElementById('loginBox').style.display = 'none';
-        document.getElementById('dashboard').style.display = 'block';
-      } else {
-        errorBox.textContent = data.message || "Login failed.";
-      }
-    })
-    .catch(err => {
-      errorBox.textContent = "Error: " + err.message;
-    });
-  }
-
-  function updateStatus(status) {
-    const orderId = document.getElementById("orderInput").value.trim();
-    const msgBox = document.getElementById("statusMsg");
-
-    if (!orderId) {
-      msgBox.style.color = "red";
-      msgBox.textContent = "Please enter an Order ID.";
-      return;
-    }
-
-    fetch(PROXY + WEB_APP_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({
-        action: 'updateStatus',
-        orderId: orderId,
-        status: status
-      })
-    })
-    .then(res => res.json())
-    .then(data => {
-      msgBox.style.color = data.result === 'success' ? 'green' : 'red';
-      msgBox.textContent = data.message;
-    })
-    .catch(error => {
-      msgBox.style.color = 'red';
-      msgBox.textContent = "Error: " + error.message;
-    });
-  }
-</script>
-
 </body>
 </html>

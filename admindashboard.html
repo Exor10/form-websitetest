@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Admin Dashboard - Sharksfin Orders</title>
   <style>
     body {
@@ -32,7 +32,6 @@
       margin-top: 10px;
       margin-bottom: 10px;
       font-size: 16px;
-      box-sizing: border-box;
     }
     button {
       width: 48%;
@@ -75,8 +74,8 @@
 
 <div class="login-box" id="loginBox">
   <h2>Admin Login</h2>
-  <input type="text" id="username" placeholder="Username" required>
-  <input type="password" id="password" placeholder="Password" required>
+  <input type="text" id="username" placeholder="Username" required />
+  <input type="password" id="password" placeholder="Password" required />
   <div class="error" id="error"></div>
   <button onclick="login()">Login</button>
 </div>
@@ -84,7 +83,7 @@
 <div class="dashboard" id="dashboard" style="display:none;">
   <h2>Sharksfin Order Sheet</h2>
   <div class="controls">
-    <input type="text" id="orderInput" placeholder="Enter Order ID (e.g. ORDER-001)">
+    <input type="text" id="orderInput" placeholder="Enter Order ID (e.g. ORDER-001)" />
     <button onclick="updateStatus('Completed')">Mark Completed</button>
     <button onclick="updateStatus('Not Completed')">Mark Not Completed</button>
   </div>
@@ -93,14 +92,15 @@
 </div>
 
 <script>
-  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzZhpgjanzBDzXjoMNM5tDhwVO7YpgqT8wP7zlfjoOVjiQ3f8-TUxJrhTeEQxh1aCun/exec";
+  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw01xcvaZbLb6oha5jzJsSesZsB_sct9ja2bdPxRqu8BP5VFnMTsaBfJPWhy6g6jdAT/exec";
+  const PROXY = "https://api.allorigins.win/raw?url=";
 
   function login() {
     const inputUser = document.getElementById('username').value;
     const inputPass = document.getElementById('password').value;
     const errorBox = document.getElementById('error');
 
-    fetch("https://corsproxy.io/?" + encodeURIComponent(WEB_APP_URL), {
+    fetch(PROXY + encodeURIComponent(WEB_APP_URL), {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({
@@ -114,7 +114,8 @@
       if (data.result === 'success') {
         document.getElementById('loginBox').style.display = 'none';
         document.getElementById('dashboard').style.display = 'block';
-        document.getElementById('sheetFrame').src = "https://docs.google.com/spreadsheets/d/1fXE-7pqV7wDrS_uBGK7vLx_5adyXgv8l2yTCsPlzIvY/edit?usp=sharing";
+        document.getElementById('sheetFrame').src =
+          "https://docs.google.com/spreadsheets/d/1fXE-7pqV7wDrS_uBGK7vLx_5adyXgv8l2yTCsPlzIvY/edit?usp=sharing";
       } else {
         errorBox.textContent = data.message || "Login failed.";
       }
@@ -134,7 +135,7 @@
       return;
     }
 
-    fetch("https://corsproxy.io/?" + encodeURIComponent(WEB_APP_URL), {
+    fetch(PROXY + encodeURIComponent(WEB_APP_URL), {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({

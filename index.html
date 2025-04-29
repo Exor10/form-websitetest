@@ -85,16 +85,24 @@
 
 </div>
 
+
 <script>
 document.getElementById('orderForm').addEventListener('submit', function(e) {
   e.preventDefault();
 
   const form = document.getElementById('orderForm');
   const formData = new FormData(form);
+  const submitButton = form.querySelector('button[type="submit"]');
+
+  // Disable the button and show feedback
+  submitButton.disabled = true;
+  submitButton.textContent = "Submitting...";
 
   const receipt = formData.get('receipt');
   if (!receipt || receipt.size === 0) {
     alert('Please upload your payment receipt.');
+    submitButton.disabled = false;
+    submitButton.textContent = "Submit";
     return;
   }
 
@@ -108,14 +116,20 @@ document.getElementById('orderForm').addEventListener('submit', function(e) {
       window.location.href = 'thankyou.html?order=' + encodeURIComponent(data.orderId);
     } else {
       alert('Error submitting form: ' + (data.message || 'Unknown error.'));
+      submitButton.disabled = false;
+      submitButton.textContent = "Submit";
     }
   })
   .catch(error => {
     alert('Failed to submit. Please try again.');
     console.error(error);
+    submitButton.disabled = false;
+    submitButton.textContent = "Submit";
   });
 });
 </script>
+
+
 
 </body>
 </html>

@@ -44,11 +44,21 @@
     button:hover {
       background-color: #0056b3;
     }
-    iframe {
-      width: 100%;
-      height: 500px;
-      border: none;
-      margin-top: 20px;
+    .sheet-link {
+      margin-top: 30px;
+      text-align: center;
+    }
+    .sheet-link a {
+      display: inline-block;
+      padding: 12px 20px;
+      background: #28a745;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    .sheet-link a:hover {
+      background: #218838;
     }
   </style>
 </head>
@@ -61,8 +71,12 @@
       <button type="submit" name="status" value="Completed">Mark as Completed</button>
       <button type="submit" name="status" value="Not Completed">Mark as Not Completed</button>
     </form>
-    <iframe id="hiddenIframe" name="hiddenIframe"></iframe>
-    <iframe src="https://docs.google.com/spreadsheets/d/1fXE-7pqV7wDrS_uBGK7vLx_5adyXgv8l2yTCsPlzIvY/edit?usp=sharing"></iframe>
+    <iframe id="hiddenIframe" name="hiddenIframe" style="display:none;"></iframe>
+    <div class="sheet-link">
+      <a href="https://docs.google.com/spreadsheets/d/1fXE-7pqV7wDrS_uBGK7vLx_5adyXgv8l2yTCsPlzIvY/edit?usp=sharing" target="_blank">
+        View Orders in Google Sheet
+      </a>
+    </div>
   </div>
 </body>
 </html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Sharksfin Orders</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .login-box, .dashboard {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 600px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      margin-bottom: 10px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    button {
+      width: 48%;
+      padding: 12px;
+      font-size: 16px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 5px 1%;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .error {
+      color: red;
+      text-align: center;
+    }
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+    }
+    iframe {
+      width: 100%;
+      height: 60vh;
+      border: none;
+      margin-top: 20px;
+    }
+    #statusMsg {
+      text-align: center;
+      margin-top: 10px;
+      color: green;
+    }
+  </style>
+</head>
+<body>
+
+<div class="login-box" id="loginBox">
+  <h2>Admin Login</h2>
+  <input type="text" id="username" placeholder="Username" required>
+  <input type="password" id="password" placeholder="Password" required>
+  <div class="error" id="error"></div>
+  <button onclick="login()">Login</button>
+</div>
+
+<div class="dashboard" id="dashboard" style="display:none;">
+  <h2>Sharksfin Order Sheet</h2>
+  <div class="controls">
+    <input type="text" id="orderInput" placeholder="Enter Order ID (e.g. ORDER-001)">
+    <button onclick="updateStatus('Completed')">Mark Completed</button>
+    <button onclick="updateStatus('Not Completed')">Mark Not Completed</button>
+  </div>
+  <p id="statusMsg"></p>
+  <iframe id="sheetFrame" src="" loading="lazy"></iframe>
+</div>
+
+<script>
+  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyFoSawkIvmCHfp6fPtM4PvB3bnXrUVFFG66OZ-J7Xiupb1bYg_ap5_imGFHJ8yfqyA/exec";
+
+  function login() {
+    const inputUser = document.getElementById('username').value;
+    const inputPass = document.getElementById('password').value;
+    const errorBox = document.getElementById('error');
+
+    fetch(WEB_APP_URL, {
+      method: 'POST',
+      body: new URLSearchParams({
+        action: 'adminLogin',
+        username: inputUser,
+        password: inputPass
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.result === 'success') {
+        document.getElementById('loginBox').style.display = 'none';
+        document.getElementById('dashboard').style.display = 'block';
+        document.getElementById('sheetFrame').src = "https://docs.google.com/spreadsheets/d/1fXE-7pqV7wDrS_uBGK7vLx_5adyXgv8l2yTCsPlzIvY/edit?usp=sharing";
+      } else {
+        errorBox.textContent = data.message || "Login failed.";
+      }
+    })
+    .catch(err => {
+      errorBox.textContent = "Error: " + err.message;
+    });
+  }
+
+  function updateStatus(status) {
+    const orderId = document.getElementById("orderInput").value.trim();
+    const msgBox = document.getElementById("statusMsg");
+    if (!orderId) {
+      msgBox.style.color = "red";
+      msgBox.textContent = "Please enter an Order ID.";
+      return;
+    }
+
+    fetch(WEB_APP_URL, {
+      method: 'POST',
+      body: new URLSearchParams({
+        action: 'updateStatus',
+        orderId: orderId,
+        status: status
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+      msgBox.style.color = data.result === 'success' ? 'green' : 'red';
+      msgBox.textContent = data.message;
+    })
+    .catch(error => {
+      msgBox.style.color = 'red';
+      msgBox.textContent = "Error: " + error.message;
+    });
+  }
+</script>
+
+</body>
+</html>

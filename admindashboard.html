@@ -100,8 +100,9 @@
     const inputPass = document.getElementById('password').value;
     const errorBox = document.getElementById('error');
 
-    fetch(WEB_APP_URL, {
+    fetch("https://corsproxy.io/?" + encodeURIComponent(WEB_APP_URL), {
       method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({
         action: 'adminLogin',
         username: inputUser,
@@ -126,21 +127,23 @@
   function updateStatus(status) {
     const orderId = document.getElementById("orderInput").value.trim();
     const msgBox = document.getElementById("statusMsg");
+
     if (!orderId) {
       msgBox.style.color = "red";
       msgBox.textContent = "Please enter an Order ID.";
       return;
     }
 
-    fetch(WEB_APP_URL, {
+    fetch("https://corsproxy.io/?" + encodeURIComponent(WEB_APP_URL), {
       method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({
         action: 'updateStatus',
         orderId: orderId,
         status: status
       })
     })
-    .then(response => response.json())
+    .then(res => res.json())
     .then(data => {
       msgBox.style.color = data.result === 'success' ? 'green' : 'red';
       msgBox.textContent = data.message;

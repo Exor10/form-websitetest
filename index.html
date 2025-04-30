@@ -85,6 +85,19 @@
 
 </div>
 
+<script>
+// Autofill item name from URL
+window.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const itemName = params.get('item');
+  if (itemName) {
+    const itemInput = document.querySelector('input[name="item"]');
+    if (itemInput) {
+      itemInput.value = itemName;
+    }
+  }
+});
+</script>
 
 <script>
 document.getElementById('orderForm').addEventListener('submit', function(e) {
@@ -128,8 +141,6 @@ document.getElementById('orderForm').addEventListener('submit', function(e) {
   });
 });
 </script>
-
-
 
 </body>
 </html>
